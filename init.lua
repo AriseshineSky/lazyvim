@@ -1,3 +1,10 @@
+-- disable netrw at the very start of your init.lua
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- set termguicolors to enable highlight groups
+vim.opt.termguicolors = true
+
 local set = vim.o
 set.number = true
 set.relativenumber = true
@@ -41,7 +48,6 @@ keymap.set("n", "-", "N", opt)
 keymap.set("n", "l", "u")
 
 keymap.set("v", "Y", '"+y', opt)
-keymap.set("n", "ykw", "yiw", opt)
 
 keymap.set('n', '<Leader><CR>', ':nohlsearch<CR>', opt)
 keymap.set('n', 'su', ':set nosplitbelow<CR>:split<CR>:set splitbelow<CR>', opt)
@@ -63,6 +69,8 @@ keymap.set('n', 'sv', '<C-w>t<C-w>H', opt)
 -- Rotate screens
 keymap.set('n', 'srv', '<C-w>b<C-w>H', opt)
 keymap.set('n', 'srh', '<C-w>b<C-w>K', opt)
+
+keymap.set('n', '<Leader>t', ':NvimTreeToggle<CR>', opt)
 
 -- lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -93,6 +101,61 @@ require("lazy").setup({
       dependencies = { 'nvim-lua/plenary.nvim' }
     },
 	
+    {
+    "williamboman/mason.nvim",
+    "williamboman/mason-lspconfig.nvim",
+    "neovim/nvim-lspconfig",
+},
+{
+  "folke/which-key.nvim",
+  event = "VeryLazy",
+  init = function()
+    vim.o.timeout = true
+    vim.o.timeoutlen = 100
+  end,
+  opts = {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+},
+{
+  "nvim-tree/nvim-tree.lua",
+  version = "*",
+  dependencies = {
+    "nvim-tree/nvim-web-devicons",
+  },
+  config = function()
+    require("nvim-tree").setup {}
+  end,
+}
 })
 
 vim.cmd.colorscheme("base16-tender")
+require("mason").setup()
+require("mason-lspconfig").setup {
+    ensure_installed = { "lua_ls", "rust_analyzer", "solargraph", "yamlls", "tsserver", "bashls", "cssls", "html", "jsonls","pyright" },
+}
+
+
+local function my_on_attach(bufnr)
+
+  local api = require "nvim-tree.api"
+
+  local function opts(desc)
+    return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+  end
+
+  -- default mappings
+  api.config.mappings.default_on_attach(bufnr)
+
+  -- custom mappings
+  vim.keymap.set('n', '<C-t>', api.tree.change_root_to_parent,        opts('Up'))
+  vim.keymap.set('n', '?',     api.tree.toggle_help,                  opts('Help'))
+end
+
+-- pass to setup along with your other options
+require("nvim-tree").setup {
+  on_attach = my_on_attach,
+}
+
