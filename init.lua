@@ -63,3 +63,24 @@ keymap.set('n', 'sv', '<C-w>t<C-w>H', opt)
 -- Rotate screens
 keymap.set('n', 'srv', '<C-w>b<C-w>H', opt)
 keymap.set('n', 'srh', '<C-w>b<C-w>K', opt)
+
+
+-- lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+require("lazy").setup({
+	{
+		"RRethy/nvim-base16",
+		lazy = true,
+	},
+})
