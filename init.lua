@@ -64,7 +64,6 @@ keymap.set('n', 'sv', '<C-w>t<C-w>H', opt)
 keymap.set('n', 'srv', '<C-w>b<C-w>H', opt)
 keymap.set('n', 'srh', '<C-w>b<C-w>K', opt)
 
-
 -- lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -83,4 +82,17 @@ require("lazy").setup({
 		"RRethy/nvim-base16",
 		lazy = true,
 	},
+-- init.lua:
+    {
+	    cmd = "Telescope",
+	    keys = {
+		    {		    "<C-p>", ":Telescope find_files<CR>", desc = "find files"},
+	    },
+    'nvim-telescope/telescope.nvim', tag = '0.1.1',
+-- or                              , branch = '0.1.1',
+      dependencies = { 'nvim-lua/plenary.nvim' }
+    },
+	
 })
+
+vim.cmd.colorscheme("base16-tender")
