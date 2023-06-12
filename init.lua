@@ -95,9 +95,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     {
-        "RRethy/nvim-treesitter-endwise"
-    },
-    {
 		"tpope/vim-surround",
 	},
     {
